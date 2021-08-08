@@ -1,0 +1,22 @@
+Instructions to build the POC
+
+Requirements:
+- DSEGraph 6.8.x
+- DSE Studio 6.8.x
+- DSBulk 1.7 or higher
+
+Creating schema
+- Cut and paste "mtb_final.gremlin" into Studio and make sure it runs succesfully.
+The top part, which includes the vertexLabel and edgeLabel commands create the schema.
+Everything below "Scenarios", create the relevant indexes and run the Scenarios(queries).
+- Alternatively, you can load to Studio the latest notebook under the notebook/ folder. 
+This is instead of cutting and pasting, plus the settings for icon and labels will below
+loading as well.
+
+Loading data
+- Inside load_csv.sh edit the variable DSBULK_HOME to wherever you have dsbulk installed
+- Run load_csv.sh on the command-line, for example:
+> ./load_csv.sh mtb_final
+
+Running
+- On Studio, run the queries at the bottom of "mtb_final.gremlin" subtitled as "Scenarios"

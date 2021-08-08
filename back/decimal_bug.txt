@@ -1,0 +1,40 @@
+
+Is this a Gremlin bug or am using the wrong operator for Decimal?
+
+// Schema
+schema.vertexLabel('Transaction').
+    ifNotExists().
+    partitionBy('transactionId', Text).
+    property('amount', Decimal).
+    property('datetime', Timestamp).
+    create()
+
+// Index
+schema.vertexLabel('Transaction').searchIndex().ifNotExists().by('amount').create()
+
+// Data
+transactionId,amount,datetime
+t100,50,2021-03-15T05:15:00.00Z
+t101,5000,2021-02-10T05:15:00.00Z
+t102,100000,2021-02-02T05:15:00.00Z
+t103,50000,2021-03-03T05:15:00.00Z
+t104,10001,2021-03-04T05:15:00.00Z
+
+When I run, this on Studio I get:
+g.V().hasLabel('Transaction').has('amount', gt(9999.00))
+
+I get no results.
+When I run:
+
+select * from mtb."Transaction" where amount > 9999.00 allow filtering; 
+
+I get:
+
+transactionId | amount | datetime                        | solr_query
+---------------+--------+---------------------------------+------------
+          t103 |  50000 | 2021-03-03 05:15:00.000000+0000 |       null
+          t102 | 100000 | 2021-02-02 05:15:00.000000+0000 |       null
+          t104 |  10001 | 2021-03-04 05:15:00.000000+0000 |       null
+
+as expected. What gives?
+

@@ -1,0 +1,21 @@
+
+Required:
+- Debian environnment (Ubuntu)
+- Python 3.7.3
+
+Install this:
+
+sudo apt-get install -y
+
+build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev  xz-utils tk-dev libffi-dev liblzma-dev python-openssl 
+
+
+(pip3 install)
+
+matplotlib==3.2.2
+networkx==2.5
+streamlit==0.73.1
+pyvis==0.1.8.2 
+cassandra-driver[graph]
+
+The requirements.txt file in this folder is copy of the "pip freeze" of my full dev environment.

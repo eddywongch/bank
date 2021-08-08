@@ -1,0 +1,220 @@
+system.graph('mtb').ifNotExists().create()
+
+// Account
+// contactName,contactRiskScore,accountNumber
+
+schema.vertexLabel('Account').
+    ifNotExists().
+    partitionBy('accountId', Text).
+    property('contactName', Text).
+    property('contactRiskScore', Int).
+    create()
+
+// Account
+// Eddy,Wong,700,a1001
+a1 = g.addV('Account').
+   property('contactName', 'Eddy Wong').
+   property('contactRiskScore', 700).
+   property('accountNumber','a1001').
+   next()
+
+// Transaction 
+// transactionId,amount,datetime
+//t100,50,2021-01-01T05:15:00.00Z
+schema.vertexLabel('Transaction').
+    ifNotExists().
+    partitionBy('transactionId', Text).
+    property('amount', Double).
+    property('datetime', Timestamp).
+    create()
+
+t1 = g.addV('Transaction').
+    property('transactionId', 't100').
+    property('amount', 100.00).
+    property('datetime', 2021-03-15T05:15:00.00Z).
+    next()
+
+// Email
+// emailId,emailAddr,ageDays,changeDays
+// e101,hogwarts@datastax.com,100,2
+schema.vertexLabel('Email').
+    ifNotExists().
+    partitionBy('emailId', Text).
+    property('emailAddr', Text).
+    property('ageDays', Int).
+    property('changeDays', Int).
+    create()
+
+// withdraws_from
+schema.edgeLabel('withdraws_from').
+    ifNotExists().
+    from('Transaction').to('Account').
+    clusterBy("datetime", Timestamp).
+	create()
+
+// withdraws_from
+// Transaction_transactionId, Account_accountNumber, datetime
+// t101,a101,2020-20-04T05:15:00.00Z
+// Does not work (on Studio)
+w1 = g.addE('withdraws_from').
+   from('Transaction').
+   to('Account').
+   property('Transaction_transactionId', 't101').
+   property('Account_accountNumber', 'a101').
+   property('datetime','2020-20-04T05:15:00.00Z').
+   next()
+
+// deposits_to
+schema.edgeLabel('deposits_to').
+    ifNotExists().
+    from('Transaction').to('Account').
+    clusterBy("datetime", Timestamp).
+	create()
+
+// Does not work (on Studio)
+d1 = g.addE('deposits_to').
+   from('Transaction').
+   to('Account').
+   property('Transaction_transactionId', 't101').
+   property('Account_accountNumber', 'a101').
+   property('datetime','2020-20-04T05:15:00.00Z').
+   next()
+
+// Party
+schema.vertexLabel('Party').
+    ifNotExists().
+    partitionBy('partyId', Text).
+    property('contactName', Text).
+    create()
+
+// uses_email
+schema.edgeLabel('uses_email').
+    ifNotExists().
+    from('Party').to('Email').
+    clusterBy("datetime", Timestamp).
+	create()
+
+schema.edgeLabel('owns').
+    ifNotExists().
+    from('Party').to('Account').
+    clusterBy("datetime", Timestamp).
+	create()
+
+schema.vertexLabel('Phone').
+    ifNotExists().
+    partitionBy('phoneId', Text).
+    property('phoneNumber', Text).
+    property('changeDays', Int).
+    create()
+
+schema.edgeLabel('uses_phone').
+    ifNotExists().
+    from('Party').to('Phone').
+    clusterBy("datetime", Timestamp).
+	create()
+
+// addressId,address,state,changeDays
+schema.vertexLabel('Address').
+    ifNotExists().
+    partitionBy('addressId', Text).
+    property('address', Text).
+    property('state', Text).
+    property('changeDays', Int).
+    create()
+
+schema.edgeLabel('resides_at').
+    ifNotExists().
+    from('Party').to('Address').
+    clusterBy("datetime", Timestamp).
+	create()
+
+---- indexing (to query by certain field) ---
+// Filter by amount
+g.V().hasLabel('Transaction').has("amount",gte(10000.00))
+schema.indexFor(g.V().hasLabel('Transaction').has("amount",gte(10000.00))).analyze()
+schema.vertexLabel('Transaction').searchIndex().ifNotExists().by('amount').create()
+
+// Filter by date
+
+// Timestamp
+schema.vertexLabel('test').
+  ifNotExists().
+  partitionBy('testId', Text).
+  property('since', Timestamp).
+  create()
+
+t1 = g.addV('test').
+   property('testId', 'EddyWong').
+   property('since','2009-10-23T10:15:30.00Z' as Instant).
+   next()
+
+schema.vertexLabel('test').searchIndex().ifNotExists().by('since').create()
+g.V().has('test', 'since', gt('2000-10-23T10:15:30.00Z' as Instant))
+
+property('meal_date', '2009-10-23T10:15:30.00Z' as Instant)
+
+// Date
+property('review_date', '2010-10-02' as LocalDate)
+
+// Doesn't work
+g.V().hasLabel('Transaction').has('datetime', gt(('2021-03-03').toDatetime()))
+
+--- cqlsh ---
+// Reloading Transaction table and relations
+cqlsh> drop table mtb."Transaction__deposits_to__Account";
+cqlsh> drop table mtb."Transaction__withdraws_from__Account";
+cqlsh> drop table mtb."Transaction";
+cqlsh> 
+
+---- old stuff ---
+
+// Transaction relation
+schema.edgeLabel('transaction').
+    ifNotExists().
+    from('party').to('party').
+    partitionBy('transactionId', Text).
+	clusterBy(OUT,'routingCode', 'origRoutingCode').
+    clusterBy(OUT,'accountNumber', 'origAccountNumber').
+	clusterBy(IN,'routingCode', 'destRoutingCode').
+  	clusterBy(IN,'accountNumber', 'destAccountNumber').  
+	property('origRiskScore', Int).
+	property('destRiskScore', Int).
+	property('amount', Decimal).
+	property('datetime', Timestamp).
+	create()
+
+// Transaction sample
+// t100,12341234,a1001,700,12341234,a1002,300,50,2021-01-01T05:15:00.00Z
+t1 = g.addV('transaction').
+   property('transactionId', 't100').
+   property('origRoutingCode', '12341234').
+   property('origAccountId', 'a1001').
+   property('origRiskScore', '700').
+   property('destRoutingCode', 12341234).
+   property('destAccountNumber','a1002').
+   property('destRiskScore', 300).
+   property('amount', 50).
+   property('datetime', 2021-01-01T05:15:00.00Z).
+   next()
+
+
+// MV for query to work
+schema.edgeLabel('transaction').from('party').to('party').materializedView('party__transaction__party_by_out_party_accountNumber').
+ifNotExists().partitionBy(OUT, 'accountNumber').clusterBy('transactionId', Asc).clusterBy(IN, 'accountNumber', Asc).create()
+
+
+// Transaction
+
+schema.edgeLabel('transaction').
+    ifNotExists().
+    from('party').to('party').
+    partitionBy('transactionId', Text).
+	clusterBy(OUT,'rountingCode', 'origRoutingCode').
+    clusterBy(OUT,'accountNumber', 'accountNumber').
+	clusterBy(IN,'routingCode', 'destAccountNumber').
+  	clusterBy(IN,'accountNumber', 'destAccountNumber').  
+	property('origRiskScore', Int).
+	property('destRiskScore', Int).
+	property('amount', Decimal).
+	property('datetime', Timestamp).
+	create()
