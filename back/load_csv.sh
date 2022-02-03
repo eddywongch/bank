@@ -25,7 +25,7 @@ GRAPH=$1
 if [ -z "$GRAPH" ]; then
     	#echo "Base dir must be provided"
 	# Setting detault to 'mtb'
-	GRAPH=mtb
+	GRAPH=bank
 fi
 
 $DSBULK_EXE load -g $GRAPH -v Account -url Account.csv -header true
