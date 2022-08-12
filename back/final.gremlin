@@ -1,0 +1,122 @@
+system.graph('mtb_final').ifNotExists().create()
+
+// Party
+schema.vertexLabel('Party').
+    ifNotExists().
+    partitionBy('partyId', Text).
+    property('contactName', Text).
+    create()
+
+// Account
+// contactName,contactRiskScore,routingCode,accountNumber
+schema.vertexLabel('Account').
+    ifNotExists().
+    partitionBy('accountNumber', Text).
+    property('contactName', Text).
+    property('contactRiskScore', Int).
+    property('routingCode', Text).
+    create()
+
+// owns 
+schema.edgeLabel('owns').
+    ifNotExists().
+    from('Party').to('Account').
+    clusterBy("datetime", Timestamp).
+	create()
+
+// Transaction
+schema.vertexLabel('Transaction').
+    ifNotExists().
+    partitionBy('transactionId', Text).
+    property('amount', Double).
+    property('datetime', Timestamp).
+    create()
+    
+// withdraws_from
+schema.edgeLabel('withdraws_from').
+    ifNotExists().
+    from('Transaction').to('Account').
+    clusterBy("datetime", Timestamp).
+	create()
+	
+schema.edgeLabel('deposits_to').
+    ifNotExists().
+    from('Transaction').to('Account').
+    clusterBy("datetime", Timestamp).
+	create()
+
+// Phone
+schema.vertexLabel('Phone').
+    ifNotExists().
+    partitionBy('phoneId', Text).
+    property('phoneNumber', Text).
+    property('changeDays', Int).
+    create()
+
+// uses_phone
+schema.edgeLabel('uses_phone').
+    ifNotExists().
+    from('Party').to('Phone').
+    clusterBy("datetime", Timestamp).
+	create()
+
+// Address
+schema.vertexLabel('Address').
+    ifNotExists().
+    partitionBy('addressId', Text).
+    property('address', Text).
+    property('state', Text).
+    property('changeDays', Int).
+    create()
+
+// resides_at
+schema.edgeLabel('resides_at').
+    ifNotExists().
+    from('Party').to('Address').
+    clusterBy("datetime", Timestamp).
+	create()
+
+// Email
+schema.vertexLabel('Email').
+    ifNotExists().
+    partitionBy('emailId', Text).
+    property('emailAddr', Text).
+    property('ageDays', Int).
+    property('changeDays', Int).
+    create()
+
+// uses_email
+schema.edgeLabel('uses_email').
+    ifNotExists().
+    from('Party').to('Email').
+    clusterBy("datetime", Timestamp).
+	create()
+
+// Company. Added post demo
+schema.vertexLabel('Company').
+    ifNotExists().
+    partitionBy('companyId', Text).
+    property('companyName', Text).
+    create()
+
+// works_for
+schema.edgeLabel('works_for').
+    ifNotExists().
+    from('Party').to('Company').
+    clusterBy("startDate", Timestamp).
+	create()
+
+// Scenarios
+
+// Party/Company
+schema.vertexLabel('Company').materializedView('Company_by_companyName').ifNotExists().partitionBy('companyName').clusterBy('companyId', Asc).create()
+g.V().has('Company','companyName','DataStax')
+
+
+// Amount Scenario
+schema.vertexLabel('Transaction').searchIndex().ifNotExists().by('amount').create()
+g.V().has('Transaction', 'amount', gt(9999.00))
+
+// Date Scenario
+schema.vertexLabel('Transaction').searchIndex().ifNotExists().by('datetime').create()
+g.V().has('Transaction', 'datetime', gt('2021-02-02T10:15:30.00Z' as Instant))

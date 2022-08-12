@@ -6,7 +6,7 @@ Requirements:
 - DSBulk 1.7 or higher
 
 Creating schema
-- Cut and paste "mtb_final.gremlin" into Studio and make sure it runs succesfully.
+- Cut and paste "final.gremlin" into Studio and make sure it runs succesfully.
 The top part, which includes the vertexLabel and edgeLabel commands create the schema.
 Everything below "Scenarios", create the relevant indexes and run the Scenarios(queries).
 - Alternatively, you can load to Studio the latest notebook under the notebook/ folder. 
@@ -19,4 +19,4 @@ Loading data
 > ./load_csv.sh mtb_final
 
 Running
-- On Studio, run the queries at the bottom of "mtb_final.gremlin" subtitled as "Scenarios"
+- On Studio, run the queries at the bottom of "final.gremlin" subtitled as "Scenarios"
