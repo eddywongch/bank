@@ -1,4 +1,4 @@
-system.graph('mtb').ifNotExists().create()
+system.graph('bank').ifNotExists().create()
 
 // Account
 // contactName,contactRiskScore,accountNumber
@@ -161,9 +161,9 @@ g.V().hasLabel('Transaction').has('datetime', gt(('2021-03-03').toDatetime()))
 
 --- cqlsh ---
 // Reloading Transaction table and relations
-cqlsh> drop table mtb."Transaction__deposits_to__Account";
-cqlsh> drop table mtb."Transaction__withdraws_from__Account";
-cqlsh> drop table mtb."Transaction";
+cqlsh> drop table bank."Transaction__deposits_to__Account";
+cqlsh> drop table bank."Transaction__withdraws_from__Account";
+cqlsh> drop table bank."Transaction";
 cqlsh> 
 
 ---- old stuff ---
