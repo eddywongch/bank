@@ -22,7 +22,7 @@ DSBULK_HOME=/home/automaton/dsbulk/dsbulk-1.8.0
 DSBULK_EXE=$DSBULK_HOME/bin/dsbulk
 
 # Hardcoding to my dev server
-HOST=10.101.34.200
+HOST=54.148.138.237
 PORT=9042
 
 # Astra
@@ -56,7 +56,7 @@ fi
 if [ -z "$ASTRA" ]; then
 	SCB_FLAGS=
 else
-	SCB_FLAGS=`echo "-b $BUNDLE -u $USERNAME -p $PASSWORD"`
+	SCB_FLAGS=`echo "$SCB_FLAGS -u $USERNAME -p $PASSWORD"`
 fi
 
 
@@ -64,20 +64,20 @@ echo "$DSBULK_EXE load -h $HOST -p $PORT $SCB_FLAGS -g $GRAPH -v "Account" -url 
 echo "FLAGS: $SCB_FLAGS"
 $DSBULK_EXE load -h $HOST -p $PORT $SCB_FLAGS -g $GRAPH -v "Account" -url Account.csv  -header true
 
-$DSBULK_EXE load -h $HOST -p $PORT -b $BUNDLE -u $USERNAME -p $PASSWORD -g $GRAPH -v Party -url Party.csv -header true
-$DSBULK_EXE load -h $HOST -p $PORT -b $BUNDLE -u $USERNAME -p $PASSWORD -g $GRAPH -e owns -from Party -to Account -url owns.csv -header true
-$DSBULK_EXE load -h $HOST -p $PORT -b $BUNDLE -u $USERNAME -p $PASSWORD -g $GRAPH -v Company -url Company.csv -header true
-$DSBULK_EXE load -h $HOST -p $PORT -b $BUNDLE -u $USERNAME -p $PASSWORD -g $GRAPH -e works_for -from Party -to Company -url works_for.csv -header true
+$DSBULK_EXE load -h $HOST -p $PORT $SCB_FLAGS  -g $GRAPH -v Party -url Party.csv -header true
+$DSBULK_EXE load -h $HOST -p $PORT $SCB_FLAGS  -g $GRAPH -e owns -from Party -to Account -url owns.csv -header true
+$DSBULK_EXE load -h $HOST -p $PORT $SCB_FLAGS  -g $GRAPH -v Company -url Company.csv -header true
+$DSBULK_EXE load -h $HOST -p $PORT $SCB_FLAGS  -g $GRAPH -e works_for -from Party -to Company -url works_for.csv -header true
 
-$DSBULK_EXE load -h $HOST -p $PORT -b $BUNDLE -u $USERNAME -p $PASSWORD  -g $GRAPH -v Transaction -url Transaction.csv -header true
-$DSBULK_EXE load -h $HOST -p $PORT -b $BUNDLE -u $USERNAME -p $PASSWORD  -g $GRAPH -e withdraws_from -from Transaction -to Account -url withdraws_from.csv -header true
-$DSBULK_EXE load -h $HOST -p $PORT -b $BUNDLE -u $USERNAME -p $PASSWORD  -g $GRAPH -e deposits_to -from Transaction -to Account -url deposits_to.csv -header true
+$DSBULK_EXE load -h $HOST -p $PORT $SCB_FLAGS   -g $GRAPH -v Transaction -url Transaction.csv -header true
+$DSBULK_EXE load -h $HOST -p $PORT $SCB_FLAGS   -g $GRAPH -e withdraws_from -from Transaction -to Account -url withdraws_from.csv -header true
+$DSBULK_EXE load -h $HOST -p $PORT $SCB_FLAGS   -g $GRAPH -e deposits_to -from Transaction -to Account -url deposits_to.csv -header true
 
-$DSBULK_EXE load -h $HOST -p $PORT -b $BUNDLE -u $USERNAME -p $PASSWORD  -g $GRAPH -v Email -url Email.csv -header true
-$DSBULK_EXE load -h $HOST -p $PORT -b $BUNDLE -u $USERNAME -p $PASSWORD  -g $GRAPH -e uses_email -from Party -to Email -url uses_email.csv -header true
+$DSBULK_EXE load -h $HOST -p $PORT $SCB_FLAGS   -g $GRAPH -v Email -url Email.csv -header true
+$DSBULK_EXE load -h $HOST -p $PORT $SCB_FLAGS   -g $GRAPH -e uses_email -from Party -to Email -url uses_email.csv -header true
 
-$DSBULK_EXE load -h $HOST -p $PORT -b $BUNDLE -u $USERNAME -p $PASSWORD  -g $GRAPH -v Phone -url Phone.csv -header true
-$DSBULK_EXE load -h $HOST -p $PORT -b $BUNDLE -u $USERNAME -p $PASSWORD  -g $GRAPH -e uses_phone -from Party -to Phone -url uses_phone.csv -header true
+$DSBULK_EXE load -h $HOST -p $PORT $SCB_FLAGS   -g $GRAPH -v Phone -url Phone.csv -header true
+$DSBULK_EXE load -h $HOST -p $PORT $SCB_FLAGS   -g $GRAPH -e uses_phone -from Party -to Phone -url uses_phone.csv -header true
 
-$DSBULK_EXE load -h $HOST -p $PORT -b $BUNDLE -u $USERNAME -p $PASSWORD  -g $GRAPH -v Address -url Address.csv -header true
-$DSBULK_EXE load -h $HOST -p $PORT -b $BUNDLE -u $USERNAME -p $PASSWORD  -g $GRAPH -e resides_at -from Party -to Address -url resides_at.csv -header true
+$DSBULK_EXE load -h $HOST -p $PORT $SCB_FLAGS   -g $GRAPH -v Address -url Address.csv -header true
+$DSBULK_EXE load -h $HOST -p $PORT $SCB_FLAGS   -g $GRAPH -e resides_at -from Party -to Address -url resides_at.csv -header true
