@@ -25,16 +25,16 @@ DSBULK_EXE=$DSBULK_HOME/bin/dsbulk
 # -url /Users/eddy.wong/workspace/datastax/astra/bank/Account.csv 
 # -k bank -t "Account" 
 # -b /Users/eddy.wong/keys/secure-connect-ds5-poc.zip 
-# -u DEeyDlsUfdMWrWgDdETwSZtS 
-# -p  pAvGQUZnKoqBdwNtqXm7Ucneu5,ZcvpDrUaXCRvGlHjXY5O0CR9KNdnwD8S8SX8eQ7.1F_xeEW77hjAlHo25ZQIhuBexIfGlD6Q6IlLONr779t+8D_Gjf5EHZprI+5mg 
+# -u user
+# -p password
 # -header true
 
 DSBULK_HOME=/Users/eddy.wong/programs/dsbulk-1.8.0/
 DSBULK_EXE=$DSBULK_HOME/bin/dsbulk
 
 BUNDLE=/Users/eddy.wong/keys/secure-connect-ds5-poc-plus.zip
-#USERNAME=DEeyDlsUfdMWrWgDdETwSZtS
-#PASSWORD=pAvGQUZnKoqBdwNtqXm7Ucneu5,ZcvpDrUaXCRvGlHjXY5O0CR9KNdnwD8S8SX8eQ7.1F_xeEW77hjAlHo25ZQIhuBexIfGlD6Q6IlLONr779t+8D_Gjf5EHZprI+5mg 
+#USERNAME=user
+#PASSWORD=password
 USERNAME=test
 PASSWORD=test
 
