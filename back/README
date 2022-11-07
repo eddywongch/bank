@@ -1,4 +1,4 @@
-Instructions to build the POC
+Instructions to build the bank POC
 
 Requirements:
 - DSEGraph 6.8.x
@@ -16,7 +16,7 @@ loading as well.
 Loading data
 - Inside load_csv.sh edit the variable DSBULK_HOME to wherever you have dsbulk installed
 - Run load_csv.sh on the command-line, for example:
-> ./load_csv.sh mtb_final
+> ./load_csv.sh bank
 
 Running
 - On Studio, run the queries at the bottom of "final.gremlin" subtitled as "Scenarios"
